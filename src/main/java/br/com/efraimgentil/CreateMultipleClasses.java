@@ -21,6 +21,8 @@ import org.jboss.forge.addon.ui.util.Categories;
 import org.jboss.forge.addon.ui.util.Metadata;
 import org.jboss.forge.roaster.model.JavaType;
 
+import br.com.efraimgentil.crud.RepositoryBuilder;
+
 public class CreateMultipleClasses extends AbstractUICommand {
 
 	@Inject
@@ -45,12 +47,16 @@ public class CreateMultipleClasses extends AbstractUICommand {
 
 	@Override
 	public Result execute(UIExecutionContext context) throws Exception {
+		Project selectedProject = getSelectedProject(context.getUIContext() );
 		String basePackage = getBasePackage(context.getUIContext());
 		String value = targetPackage.getValue();
 		
 		JavaResource javaResource = getSelectedProject(context.getUIContext()).getFacet(JavaSourceFacet.class).getJavaResource(value);
 		
 		JavaType<?> javaType = javaResource.getJavaType();
+		
+		new RepositoryBuilder( javaResource , basePackage ).build( selectedProject );
+		
 		return Results.success( "" + javaType );
 	}
 
