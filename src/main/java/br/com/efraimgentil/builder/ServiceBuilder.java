@@ -1,42 +1,63 @@
 package br.com.efraimgentil.builder;
 
+import java.io.FileNotFoundException;
 import java.util.List;
+
+import javax.persistence.Id;
 
 import org.jboss.forge.addon.parser.java.facets.JavaSourceFacet;
 import org.jboss.forge.addon.parser.java.resources.JavaResource;
 import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.resource.Resource;
 import org.jboss.forge.roaster.Roaster;
+import org.jboss.forge.roaster.model.Type;
+import org.jboss.forge.roaster.model.source.FieldSource;
+import org.jboss.forge.roaster.model.source.Import;
+import org.jboss.forge.roaster.model.source.Importer;
+import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaInterfaceSource;
 
+import br.com.efraimgentil.CrudService;
 import br.com.efraimgentil.GenericRepository;
 
 public class ServiceBuilder {
 	
 	private JavaResource entityResource;
 	private String basePackage;
+	private JavaResource repository;
 	
-	public ServiceBuilder(JavaResource javaResource , String basePackage) {
+	public ServiceBuilder(JavaResource javaResource , String basePackage , JavaResource repository) {
 		this.entityResource = javaResource;
 		this.basePackage = basePackage;
+		this.repository = repository;
 	}
 	
-	public void build( Project project ){
+	public JavaResource build( Project project ) throws FileNotFoundException{
 		JavaSourceFacet javaSourceFacet = project.getFacet(JavaSourceFacet.class);
+		
+		JavaClassSource javaType = entityResource.getJavaType();
+		Type<JavaClassSource> idType = null ;
+		List<FieldSource<JavaClassSource>> fields = javaType.getFields();
+		for (FieldSource<JavaClassSource> fieldSource : fields) {
+			if( fieldSource.hasAnnotation(Id.class) ) ;
+				idType = fieldSource.getType();
+		}
 		
 		
 		String entityPackage = javaSourceFacet.calculatePackage(entityResource);
 		String entityName = javaSourceFacet.calculateName(entityResource);
+		String repositoryName = javaSourceFacet.calculateName( repository  );
 		String subPackage = entityPackage.replace( basePackage + ".entity" , "" );
 		
-		JavaInterfaceSource repository = (JavaInterfaceSource) Roaster.create(JavaInterfaceSource.class).setName( entityName + "Service" );
-		repository.setPackage(basePackage + ".service" + subPackage );
-		repository.addImport( entityPackage + "." + entityName  );
-		repository.addImport( GenericRepository.class );
-		repository.addInterface("GenericRepository<" + entityName+ ">");
+		JavaClassSource service = (JavaClassSource) Roaster.create(JavaClassSource.class).setName( entityName + "Service" );
+		service.setPackage(basePackage + ".service" + subPackage );
+		service.addImport( entityPackage + "." + entityName  );
+		service.addImport( CrudService.class );
+		service.addImport(  repository.getJavaType().getQualifiedName()  );
+		service.addImport( idType.getQualifiedName() );
+		service.setSuperType("CrudService<" + entityName+ " , " + idType.getName() + ", " + repositoryName +">");
 		
-		javaSourceFacet.saveJavaSource(repository);
-		
+		return javaSourceFacet.saveJavaSource(service);
 	}
 	
 }

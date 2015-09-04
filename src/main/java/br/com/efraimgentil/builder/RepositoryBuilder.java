@@ -29,7 +29,7 @@ public class RepositoryBuilder {
 		this.basePackage = basePackage;
 	}
 	
-	public void build( Project project ) throws FileNotFoundException{
+	public JavaResource build( Project project ) throws FileNotFoundException{
 		JavaSourceFacet javaSourceFacet = project.getFacet(JavaSourceFacet.class);
 		
 		JavaClassSource javaType = entityResource.getJavaType();
@@ -52,8 +52,7 @@ public class RepositoryBuilder {
 		repository.addInterface("GenericRepository<" + entityName+ " , " + idType.getName() + ">");
 		
 		
-		javaSourceFacet.saveJavaSource(repository);
-		
+		return javaSourceFacet.saveJavaSource(repository);
 	}
 	
 }
