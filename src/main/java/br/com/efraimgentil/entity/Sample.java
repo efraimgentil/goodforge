@@ -1,5 +1,10 @@
 package br.com.efraimgentil.entity;
 
-public class Sample {
+import javax.persistence.Id;
 
+public class Sample {
+	
+	@Id
+	private Integer id;
+	
 }

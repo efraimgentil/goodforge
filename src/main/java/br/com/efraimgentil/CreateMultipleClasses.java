@@ -1,12 +1,16 @@
 package br.com.efraimgentil;
 
+import java.util.List;
+
 import javax.inject.Inject;
+import javax.persistence.Id;
 
 import org.jboss.forge.addon.parser.java.facets.JavaSourceFacet;
 import org.jboss.forge.addon.parser.java.resources.JavaResource;
 import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.projects.ProjectFactory;
 import org.jboss.forge.addon.projects.Projects;
+import org.jboss.forge.addon.resource.Resource;
 import org.jboss.forge.addon.ui.command.AbstractUICommand;
 import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
@@ -20,8 +24,11 @@ import org.jboss.forge.addon.ui.result.Results;
 import org.jboss.forge.addon.ui.util.Categories;
 import org.jboss.forge.addon.ui.util.Metadata;
 import org.jboss.forge.roaster.model.JavaType;
+import org.jboss.forge.roaster.model.Type;
+import org.jboss.forge.roaster.model.source.FieldSource;
+import org.jboss.forge.roaster.model.source.JavaClassSource;
 
-import br.com.efraimgentil.crud.RepositoryBuilder;
+import br.com.efraimgentil.builder.RepositoryBuilder;
 
 public class CreateMultipleClasses extends AbstractUICommand {
 
@@ -52,12 +59,17 @@ public class CreateMultipleClasses extends AbstractUICommand {
 		String value = targetPackage.getValue();
 		
 		JavaResource javaResource = getSelectedProject(context.getUIContext()).getFacet(JavaSourceFacet.class).getJavaResource(value);
-		
-		JavaType<?> javaType = javaResource.getJavaType();
-		
+		JavaClassSource javaType = javaResource.getJavaType();
+		Type<JavaClassSource> idType = null ;
+		List<FieldSource<JavaClassSource>> fields = javaType.getFields();
+		for (FieldSource<JavaClassSource> fieldSource : fields) {
+			if( fieldSource.hasAnnotation(Id.class) ) ;
+				idType = fieldSource.getType();
+		}
+		 
 		new RepositoryBuilder( javaResource , basePackage ).build( selectedProject );
 		
-		return Results.success( "" + javaType );
+		return Results.success( "Field: " + idType.getQualifiedName());
 	}
 
 	

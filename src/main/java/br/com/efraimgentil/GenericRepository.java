@@ -1,5 +1,5 @@
 package br.com.efraimgentil;
 
-public interface GenericRepository<T> {
+public interface GenericRepository<T , IdType> {
 
 }
