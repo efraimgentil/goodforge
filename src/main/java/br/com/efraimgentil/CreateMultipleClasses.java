@@ -30,6 +30,7 @@ import org.jboss.forge.roaster.model.source.JavaClassSource;
 
 import br.com.efraimgentil.builder.RepositoryBuilder;
 import br.com.efraimgentil.builder.ServiceBuilder;
+import br.com.efraimgentil.builder.SpecsBuilder;
 
 public class CreateMultipleClasses extends AbstractUICommand {
 
@@ -69,7 +70,8 @@ public class CreateMultipleClasses extends AbstractUICommand {
 		}
 		 
 		JavaResource repository = new RepositoryBuilder( javaResource , basePackage ).build( selectedProject );
-		JavaResource service = new ServiceBuilder(javaResource, basePackage, repository).build(selectedProject);
+		JavaResource specs = new SpecsBuilder( javaResource , basePackage ).build( selectedProject );
+		JavaResource service = new ServiceBuilder(javaResource, basePackage, repository , specs).build(selectedProject);
 		
 		return Results.success( "Field: " + idType.getQualifiedName());
 	}
