@@ -14,8 +14,7 @@ public class CreateClassCommand extends
 
 	@Override
 	public UICommandMetadata getMetadata(UIContext context) {
-		return Metadata.forCommand(getClass()).name("create-class")
-				.description("Creates a new Java " + getType());
+		return Metadata.forCommand(getClass()).name("Create JSP").category( Categories.create("MY CRUD") );
 	}
 
 	@Override
