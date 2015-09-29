@@ -14,12 +14,11 @@ public class CreateClassCommand extends
 
 	@Override
 	public UICommandMetadata getMetadata(UIContext context) {
-		return Metadata.forCommand(getClass()).name("Create JSP").category( Categories.create("MY CRUD") );
+		return Metadata.forCommand(getClass()).name("Create Class").category( Categories.create("GoodForge") );
 	}
 
 	@Override
 	protected Class<JavaClassSource> getSourceType() {
-		// TODO Auto-generated method stub
 		return JavaClassSource.class;
 	}
 	
@@ -34,7 +33,6 @@ public class CreateClassCommand extends
 	
 	@Override
 	protected String getType() {
-		// TODO Auto-generated method stub
 		return "Simple Class";
 	}
 

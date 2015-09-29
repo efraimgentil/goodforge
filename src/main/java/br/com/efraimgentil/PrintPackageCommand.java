@@ -13,6 +13,7 @@ import org.jboss.forge.addon.ui.context.UIExecutionContext;
 import org.jboss.forge.addon.ui.metadata.UICommandMetadata;
 import org.jboss.forge.addon.ui.result.Result;
 import org.jboss.forge.addon.ui.result.Results;
+import org.jboss.forge.addon.ui.util.Categories;
 import org.jboss.forge.addon.ui.util.Metadata;
 
 public class PrintPackageCommand extends AbstractUICommand {
@@ -22,7 +23,7 @@ public class PrintPackageCommand extends AbstractUICommand {
 	
 	@Override
 	public UICommandMetadata getMetadata(UIContext context) {
-		 return Metadata.forCommand(PrintPackageCommand.class).name("PrintPackage");
+		 return Metadata.forCommand(PrintPackageCommand.class).name("PrintPackage").category( Categories.create("GoodForge") );
 	}
 	
 	@Override
@@ -33,8 +34,7 @@ public class PrintPackageCommand extends AbstractUICommand {
 	@Override
 	public Result execute(UIExecutionContext context) throws Exception {
 		String basePackage = getSelectedProject(context.getUIContext()).getFacet(JavaSourceFacet.class).getBasePackage();
-		
-		return Results.success(" This is my base package: " + basePackage );
+		return Results.success("This is my base package: " + basePackage );
 	}
 	
 	   protected Project getSelectedProject(UIContext context)

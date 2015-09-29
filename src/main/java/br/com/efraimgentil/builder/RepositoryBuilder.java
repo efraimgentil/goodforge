@@ -17,7 +17,7 @@ import org.jboss.forge.roaster.model.source.JavaInterfaceSource;
 import org.jboss.forge.roaster.model.source.TypeHolderSource;
 import org.jboss.forge.roaster.model.source.TypeVariableSource;
 
-import br.com.efraimgentil.GenericRepository;
+import br.com.efraimgentil.samples.GenericRepository;
 
 public class RepositoryBuilder {
 	

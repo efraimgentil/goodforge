@@ -13,7 +13,7 @@ import org.jboss.forge.roaster.model.Type;
 import org.jboss.forge.roaster.model.source.FieldSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 
-import br.com.efraimgentil.CrudService;
+import br.com.efraimgentil.samples.CrudService;
 
 public class SpecsBuilder {
 
