@@ -20,27 +20,29 @@ public class PrintPackageCommand extends AbstractUICommand {
 	
 	@Inject
 	private ProjectFactory projectFactory;
-	
+
 	@Override
 	public UICommandMetadata getMetadata(UIContext context) {
-		 return Metadata.forCommand(PrintPackageCommand.class).name("PrintPackage").category( Categories.create("GoodForge") );
+		//Define the command metadata, this will be used to display the command for the user
+		return Metadata.forCommand(PrintPackageCommand.class)
+				.name("Print Base Package")
+				.category(Categories.create("GoodForge"));
 	}
-	
+
 	@Override
 	public void initializeUI(UIBuilder builder) throws Exception {
-		// TODO Auto-generated method stub
+		/* Should initialize the UI if needed */
 	}
 
 	@Override
 	public Result execute(UIExecutionContext context) throws Exception {
-		String basePackage = getSelectedProject(context.getUIContext()).getFacet(JavaSourceFacet.class).getBasePackage();
-		return Results.success("This is my base package: " + basePackage );
+		Project project = getSelectedProject(context.getUIContext());
+		String basePackage = project.getFacet(JavaSourceFacet.class).getBasePackage();
+		return Results.success("This is my base package: " + basePackage);
 	}
-	
-	   protected Project getSelectedProject(UIContext context)
-	   {
-	      Project selectedProject = Projects.getSelectedProject( projectFactory, context);
-	      return selectedProject;
-	   }
+
+	protected Project getSelectedProject(UIContext context) {
+		return Projects.getSelectedProject(projectFactory, context);
+	}
 
 }

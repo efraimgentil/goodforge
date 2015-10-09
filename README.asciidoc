@@ -1,3 +1,52 @@
 == goodforge
 
 Project to use as reference to create addons using Jboss Forge
+
+
+## How to use
+
+- Install Jboss Tools on eclipse
+- Add Forge console to your view ( alt + shift + Q , Q )
+- Run the forge
+- Enter in the project ( cd goodforge ) and the addon ( addon-install ) 
+- Ctrl + 4 you will see all available command for forge
+- Seek for the GoodForge category
+
+Obs: The scaffolds will appear only Generate Scaffold command as a option
+
+## Creating a command
+
+- To create a command you should extends AbstractUICommand or implements UICommand
+
+```java
+public class PrintPackageCommand extends AbstractUICommand {
+	
+	@Inject
+	private ProjectFactory projectFactory;
+
+	@Override
+	public UICommandMetadata getMetadata(UIContext context) {
+		//Define the command metadata, this will be used to display the command for the user
+		return Metadata.forCommand(PrintPackageCommand.class)
+				.name("Print Base Package")
+				.category(Categories.create("GoodForge"));
+	}
+
+	@Override
+	public void initializeUI(UIBuilder builder) throws Exception {
+		/* Should initialize the UI if needed */
+	}
+
+	@Override
+	public Result execute(UIExecutionContext context) throws Exception {
+		Project project = getSelectedProject(context.getUIContext());
+		String basePackage = project.getFacet(JavaSourceFacet.class).getBasePackage();
+		return Results.success("This is my base package: " + basePackage);
+	}
+
+	protected Project getSelectedProject(UIContext context) {
+		return Projects.getSelectedProject(projectFactory, context);
+	}
+	
+}
+``` 

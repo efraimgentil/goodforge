@@ -11,7 +11,7 @@ import org.jboss.forge.addon.scaffold.spi.ScaffoldProvider;
 import org.jboss.forge.addon.scaffold.spi.ScaffoldSetupContext;
 import org.jboss.forge.addon.ui.result.NavigationResult;
 
-public class SimpleScaffoldingProvider implements ScaffoldProvider {
+public class SimpleScaffoldProvider implements ScaffoldProvider {
 	
 	
 	private Project project;
