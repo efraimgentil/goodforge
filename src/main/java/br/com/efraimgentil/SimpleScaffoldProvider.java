@@ -13,7 +13,6 @@ import org.jboss.forge.addon.ui.result.NavigationResult;
 
 public class SimpleScaffoldProvider implements ScaffoldProvider {
 	
-	
 	private Project project;
 	
 	@Override

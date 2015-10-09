@@ -44,5 +44,4 @@ public class PrintPackageCommand extends AbstractUICommand {
 	protected Project getSelectedProject(UIContext context) {
 		return Projects.getSelectedProject(projectFactory, context);
 	}
-
 }
