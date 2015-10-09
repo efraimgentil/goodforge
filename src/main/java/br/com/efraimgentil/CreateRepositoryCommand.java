@@ -1,8 +1,13 @@
 package br.com.efraimgentil;
 
+import java.util.List;
+
 import javax.inject.Inject;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Id;
 
 import org.jboss.forge.addon.parser.java.facets.JavaSourceFacet;
+import org.jboss.forge.addon.parser.java.resources.JavaFieldResource;
 import org.jboss.forge.addon.parser.java.resources.JavaResource;
 import org.jboss.forge.addon.parser.java.ui.AbstractJavaSourceCommand;
 import org.jboss.forge.addon.projects.Project;
@@ -23,10 +28,13 @@ import org.jboss.forge.addon.ui.util.Categories;
 import org.jboss.forge.addon.ui.util.Metadata;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.JavaType;
+import org.jboss.forge.roaster.model.Type;
 import org.jboss.forge.roaster.model.source.AnnotationSource;
+import org.jboss.forge.roaster.model.source.FieldSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaInterfaceSource;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 public class CreateRepositoryCommand extends AbstractUICommand {
@@ -60,12 +68,22 @@ public class CreateRepositoryCommand extends AbstractUICommand {
 		JavaResource entityJavaResource = javaSourceFacet .getJavaResource(entityPicker.getValue());
 		JavaClassSource entityJavaType = entityJavaResource.getJavaType();
 		String entityName = entityJavaType.getName();
-
+		
+		Type<JavaClassSource> idType = null;
+		for (FieldSource<JavaClassSource> f : entityJavaType.getFields()) {
+			if( f.hasAnnotation( Id.class ) || f.hasAnnotation(EmbeddedId.class) ) {
+				idType = f.getType();
+				break;
+			}
+		}
+		
 		JavaInterfaceSource source = Roaster.create(JavaInterfaceSource.class);
 		
 		source.setPackage( javaSourceFacet.getBasePackage() + ".repositories" );
 		source.setName(entityName + "Repository");
-
+		source.addImport( entityJavaType );	
+		source.addImport( idType.getQualifiedName() );
+		
 		source.addImport(Lazy.class);
 		source.addAnnotation(Lazy.class);
 		AnnotationSource<JavaInterfaceSource> annotation = source.getAnnotation( Lazy.class);
@@ -73,11 +91,15 @@ public class CreateRepositoryCommand extends AbstractUICommand {
 		
 		source.addImport(Repository.class);
 		source.addAnnotation(Repository.class);
+		
+		source.addImport(JpaRepository.class);
+		source.addInterface("JpaRepository<" +entityName + "," + idType.getName()  + ">");
 
 		javaSourceFacet.saveJavaSource(source);
 
 		return Results.success(entityName + "Repository created with success");
 	}
+	
 
 	protected Project getSelectedProject(UIContext context) {
 		return Projects.getSelectedProject(projectFactory, context);
