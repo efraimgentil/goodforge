@@ -1,15 +1,9 @@
 package br.com.efraimgentil;
 
-import java.util.List;
-
 import javax.inject.Inject;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Id;
 
 import org.jboss.forge.addon.parser.java.facets.JavaSourceFacet;
-import org.jboss.forge.addon.parser.java.resources.JavaFieldResource;
 import org.jboss.forge.addon.parser.java.resources.JavaResource;
-import org.jboss.forge.addon.parser.java.ui.AbstractJavaSourceCommand;
 import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.projects.ProjectFactory;
 import org.jboss.forge.addon.projects.Projects;
@@ -17,7 +11,6 @@ import org.jboss.forge.addon.ui.command.AbstractUICommand;
 import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
 import org.jboss.forge.addon.ui.context.UIExecutionContext;
-import org.jboss.forge.addon.ui.context.UIValidationContext;
 import org.jboss.forge.addon.ui.hints.InputType;
 import org.jboss.forge.addon.ui.input.UIInput;
 import org.jboss.forge.addon.ui.metadata.UICommandMetadata;
@@ -26,16 +19,8 @@ import org.jboss.forge.addon.ui.result.Result;
 import org.jboss.forge.addon.ui.result.Results;
 import org.jboss.forge.addon.ui.util.Categories;
 import org.jboss.forge.addon.ui.util.Metadata;
-import org.jboss.forge.roaster.Roaster;
-import org.jboss.forge.roaster.model.JavaType;
-import org.jboss.forge.roaster.model.Type;
-import org.jboss.forge.roaster.model.source.AnnotationSource;
-import org.jboss.forge.roaster.model.source.FieldSource;
-import org.jboss.forge.roaster.model.source.JavaClassSource;
-import org.jboss.forge.roaster.model.source.JavaInterfaceSource;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+
+import br.com.efraimgentil.builder.JPARepositoryBuilder;
 
 public class CreateRepositoryCommand extends AbstractUICommand {
 
@@ -63,41 +48,12 @@ public class CreateRepositoryCommand extends AbstractUICommand {
 		Project project = getSelectedProject(context.getUIContext());
 		JavaSourceFacet javaSourceFacet = project
 				.getFacet(JavaSourceFacet.class);
-
+		
 		String value = entityPicker.getValue();
 		JavaResource entityJavaResource = javaSourceFacet .getJavaResource(entityPicker.getValue());
-		JavaClassSource entityJavaType = entityJavaResource.getJavaType();
-		String entityName = entityJavaType.getName();
+		JavaResource jpaRepository = new JPARepositoryBuilder(project ).buildFor( entityJavaResource );
 		
-		Type<JavaClassSource> idType = null;
-		for (FieldSource<JavaClassSource> f : entityJavaType.getFields()) {
-			if( f.hasAnnotation( Id.class ) || f.hasAnnotation(EmbeddedId.class) ) {
-				idType = f.getType();
-				break;
-			}
-		}
-		
-		JavaInterfaceSource source = Roaster.create(JavaInterfaceSource.class);
-		
-		source.setPackage( javaSourceFacet.getBasePackage() + ".repositories" );
-		source.setName(entityName + "Repository");
-		source.addImport( entityJavaType );	
-		source.addImport( idType.getQualifiedName() );
-		
-		source.addImport(Lazy.class);
-		source.addAnnotation(Lazy.class);
-		AnnotationSource<JavaInterfaceSource> annotation = source.getAnnotation( Lazy.class);
-		annotation.setLiteralValue("true");
-		
-		source.addImport(Repository.class);
-		source.addAnnotation(Repository.class);
-		
-		source.addImport(JpaRepository.class);
-		source.addInterface("JpaRepository<" +entityName + "," + idType.getName()  + ">");
-
-		javaSourceFacet.saveJavaSource(source);
-
-		return Results.success(entityName + "Repository created with success");
+		return Results.success( jpaRepository.getName() + " created with success");
 	}
 	
 
