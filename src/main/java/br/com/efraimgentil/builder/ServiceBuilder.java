@@ -13,6 +13,8 @@ import org.jboss.forge.roaster.model.Type;
 import org.jboss.forge.roaster.model.source.FieldSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 
+import br.com.efraimgentil.util.JPAClassUtil;
+
 public class ServiceBuilder {
 	
 	private JavaResource entityResource;
@@ -31,13 +33,9 @@ public class ServiceBuilder {
 		JavaSourceFacet javaSourceFacet = project.getFacet(JavaSourceFacet.class);
 		
 		JavaClassSource javaType = entityResource.getJavaType();
-		Type<JavaClassSource> idType = null ;
-		List<FieldSource<JavaClassSource>> fields = javaType.getFields();
-		for (FieldSource<JavaClassSource> fieldSource : fields) {
-			if( fieldSource.hasAnnotation(Id.class) ) ;
-				idType = fieldSource.getType();
-		}
-//		
+		
+		Type<JavaClassSource> idType = JPAClassUtil.getIdTypeFrom(  javaType ); ;
+
 		String entityPackage = javaSourceFacet.calculatePackage(entityResource);
 		String entityName = javaSourceFacet.calculateName(entityResource);
 		String repositoryName = javaSourceFacet.calculateName( repository  );
