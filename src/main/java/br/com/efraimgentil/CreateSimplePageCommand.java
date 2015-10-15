@@ -5,6 +5,8 @@ import javax.inject.Inject;
 import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.projects.ProjectFactory;
 import org.jboss.forge.addon.projects.Projects;
+import org.jboss.forge.addon.projects.facets.WebResourcesFacet;
+import org.jboss.forge.addon.resource.DirectoryResource;
 import org.jboss.forge.addon.ui.command.AbstractUICommand;
 import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
@@ -19,61 +21,51 @@ import org.jboss.forge.addon.ui.result.Results;
 import org.jboss.forge.addon.ui.util.Categories;
 import org.jboss.forge.addon.ui.util.Metadata;
 
-import br.com.efraimgentil.builder.SimpleServiceBuilder;
-
-public class CreateSimpleServiceCommand extends AbstractUICommand {
-
+public class CreateSimplePageCommand extends AbstractUICommand{
+	
 	@Inject
 	ProjectFactory projectFactory;
 	
 	@Inject
-	@WithAttributes(label = "Package", type = InputType.JAVA_PACKAGE_PICKER, description = "Target package")
-	private UIInput<String> packageInput;
+	@WithAttributes(label = "File name", type = InputType.TEXTBOX, description = "Target package")
+	private UIInput<String> fileNameInput;
 	
-	@Inject
-	@WithAttributes(label = "Service Name", type = InputType.TEXTBOX , description = "Service name")
-	private UIInput<String> serviceNameInput;
-	
-
 	@Override
 	public UICommandMetadata getMetadata(UIContext context) {
 		return Metadata.forCommand(getClass())
-				.name("Create Simple Service")
-				.description("Create a simple service with spring")
+				.name("Create Simple Page")
+				.description("Will be create a file in the WEB_ROOT_DIR")
 				.category(Categories.create("GoodForge"));
 	}
-
+	
 	@Override
 	public void initializeUI(UIBuilder builder) throws Exception {
-		builder.add(packageInput);
-		builder.add(serviceNameInput);
+		builder.add(fileNameInput);
 	}
 
 	@Override
 	public Result execute(UIExecutionContext context) throws Exception {
 		Project project = getSelectedProject(context.getUIContext());
 		
-		new SimpleServiceBuilder(project).buildFor( packageInput.getValue() ,  serviceNameInput.getValue() );
+		WebResourcesFacet facet = project.getFacet(WebResourcesFacet.class );
+		DirectoryResource webRootDirectory = facet.getWebRootDirectory();
+
+		//TODO CREATE THE PAGE USING FREEMARKER
 		
-		return Results.success( " created with success");
+		return Results.success( webRootDirectory.getFullyQualifiedName() );
 	}
 	
 	@Override
 	public void validate(UIValidationContext validator) {
+		Project project = getSelectedProject(validator.getUIContext());
+		if(!project.hasFacet(WebResourcesFacet.class ))
+			validator.addValidationError(fileNameInput, "Project has no WebResourceFacet ( Probably selected project is not a web project ) ");
+		
 		super.validate(validator);
-		String serviceName = serviceNameInput.getValue();
-		
-		if(serviceName == null || "".equals( serviceName.trim() ) )
-			validator.addValidationError( serviceNameInput ,  serviceNameInput.getLabel() + " is required");
-		
-		String targetPackage = packageInput.getValue();
-		if(targetPackage == null || "".equals( targetPackage.trim() ) )
-			validator.addValidationError( packageInput ,  packageInput.getLabel() + " is required");
-		
 	}
 	
-	protected Project getSelectedProject(UIContext context) {
+	protected Project getSelectedProject(UIContext context){
 		return Projects.getSelectedProject(projectFactory, context);
 	}
-
+	
 }

@@ -1,27 +1,19 @@
 package br.com.efraimgentil.builder;
 
 import java.io.FileNotFoundException;
-import java.util.List;
-
-import javax.persistence.Id;
 
 import org.jboss.forge.addon.parser.java.facets.JavaSourceFacet;
 import org.jboss.forge.addon.parser.java.resources.JavaResource;
 import org.jboss.forge.addon.projects.Project;
-import org.jboss.forge.addon.resource.Resource;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.Type;
 import org.jboss.forge.roaster.model.source.AnnotationSource;
-import org.jboss.forge.roaster.model.source.FieldSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaInterfaceSource;
-import org.jboss.forge.roaster.model.source.TypeHolderSource;
-import org.jboss.forge.roaster.model.source.TypeVariableSource;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import br.com.efraimgentil.samples.GenericRepository;
 import br.com.efraimgentil.util.JPAClassUtil;
 
 public class JPARepositoryBuilder {
