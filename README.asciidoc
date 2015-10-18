@@ -21,7 +21,7 @@ Obs: The scaffolds will appear only Generate Scaffold command as a option
  - CreateSimplePageCommand - Create Simple Page
  - PrintPackageCommand - Print Base Package
  
- obs: there is also other commands, some for tests and others i'm still working on them
+Obs: there is also other commands, some for tests and others i'm still working on them
  
 
 ## Creating a command
