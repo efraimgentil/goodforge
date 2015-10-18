@@ -17,7 +17,9 @@ public class CreateClassCommand extends
 	
 	@Override
 	public UICommandMetadata getMetadata(UIContext context) {
-		return Metadata.forCommand(getClass()).name("Create Class").category( Categories.create("GoodForge") );
+		return Metadata.forCommand(getClass())
+				.name("Create Class")
+				.category( Categories.create("GoodForge") );
 	}
 
 	@Override

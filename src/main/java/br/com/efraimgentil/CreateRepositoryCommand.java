@@ -50,7 +50,7 @@ public class CreateRepositoryCommand extends AbstractUICommand {
 				.getFacet(JavaSourceFacet.class);
 		
 		String value = entityPicker.getValue();
-		JavaResource entityJavaResource = javaSourceFacet .getJavaResource(entityPicker.getValue());
+		JavaResource entityJavaResource = javaSourceFacet .getJavaResource( value );
 		JavaResource jpaRepository = new JPARepositoryBuilder(project ).buildFor( entityJavaResource );
 		
 		return Results.success( jpaRepository.getName() + " created with success");
