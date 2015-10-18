@@ -20,6 +20,9 @@ import org.jboss.forge.addon.ui.result.Result;
 import org.jboss.forge.addon.ui.result.Results;
 import org.jboss.forge.addon.ui.util.Categories;
 import org.jboss.forge.addon.ui.util.Metadata;
+import org.springframework.util.StringUtils;
+
+import br.com.efraimgentil.builder.view.SimplePageBuilder;
 
 public class CreateSimplePageCommand extends AbstractUICommand{
 	
@@ -49,8 +52,9 @@ public class CreateSimplePageCommand extends AbstractUICommand{
 		
 		WebResourcesFacet facet = project.getFacet(WebResourcesFacet.class );
 		DirectoryResource webRootDirectory = facet.getWebRootDirectory();
-
-		//TODO CREATE THE PAGE USING FREEMARKER
+		
+		new SimplePageBuilder(project).build( fileNameInput.getValue() );
+		
 		
 		return Results.success( webRootDirectory.getFullyQualifiedName() );
 	}
@@ -61,6 +65,14 @@ public class CreateSimplePageCommand extends AbstractUICommand{
 		if(!project.hasFacet(WebResourcesFacet.class ))
 			validator.addValidationError(fileNameInput, "Project has no WebResourceFacet ( Probably selected project is not a web project ) ");
 		
+		String value = fileNameInput.getValue();
+		if(!StringUtils.hasText(value))
+			validator.addValidationError(fileNameInput, "File name is required");
+		else{
+			String[] split = value.split("\\.");
+			if(split.length == 1)
+				validator.addValidationWarning(fileNameInput, "If the file name has no extesion '.jsp' will be used");
+		}
 		super.validate(validator);
 	}
 	

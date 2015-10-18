@@ -1,6 +1,5 @@
 package br.com.efraimgentil;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,10 +8,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.jboss.forge.addon.facets.FacetFactory;
-import org.jboss.forge.addon.javaee.servlet.ServletFacet;
-import org.jboss.forge.addon.javaee.servlet.ServletFacet_3_0;
-import org.jboss.forge.addon.javaee.servlet.ServletFacet_3_1;
-import org.jboss.forge.addon.parser.java.resources.JavaResource;
 import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.projects.ProjectFacet;
 import org.jboss.forge.addon.projects.facets.WebResourcesFacet;
@@ -25,8 +20,6 @@ import org.jboss.forge.addon.scaffold.util.ScaffoldUtil;
 import org.jboss.forge.addon.ui.result.NavigationResult;
 import org.jboss.forge.addon.ui.result.navigation.NavigationResultBuilder;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
-import org.jboss.forge.roaster.model.source.JavaSource;
-import org.jboss.shrinkwrap.descriptor.api.webapp30.WebAppDescriptor;
 
 import br.com.efraimgentil.freemarker.FreemarkerTemplateProcessor;
 import freemarker.template.Template;
@@ -82,7 +75,7 @@ public class ScaffoldTeste implements ScaffoldProvider {
 	         
 	         loadTemplates();
 	         
-	         HashMap<Object, Object> hashMap = new HashMap<>();
+	         HashMap<String , Object> hashMap = new HashMap<>();
 	         hashMap.put("name", entitySource.getName() );
 	         hashMap.put("age", "AAA" );
 	         generatedResources.add( 

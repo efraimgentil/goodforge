@@ -36,12 +36,12 @@ public class FreemarkerTemplateProcessor
          throw new RuntimeException(ioEx);
       }
    }
-   public static String processTemplate(Map<Object, Object> map, Template template)
+   public static String processTemplate(Map<String, Object> templateProperties, Template template)
    {
       Writer output = new StringWriter();
       try
       {	
-         template.process(map, output);
+         template.process(templateProperties, output);
       }
       catch (IOException ioEx)
       {
